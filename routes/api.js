@@ -13,7 +13,7 @@ router.use((req,res, next) => {
 })
 
 // GetUser Endpoint
-router.get('/getUser', async (req,res) => {
+router.post('/getUser', async (req,res) => {
     const userId = req.body?.user_id;
 
     const player = await Player.findOne({robloxId: userId})
