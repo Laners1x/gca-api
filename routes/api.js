@@ -78,36 +78,36 @@ router.post('/removeFine/:roblox_id/:fine_id', async (req, res) => {
     const fine_id = req.params.fine_id
 
     if (!roblox_id){
-        return res.status(400).json({'error': 'Roblox not provided'})
+        return res.status(400).json({'error': 'Roblox not provided', 'success': false})
     }
 
     const player = await Player.findOne({robloxId: roblox_id})
 
     if (!player){
-        return res.status(400).json({'error':'Player not found!'})
+        return res.status(400).json({'error':'Player not found!', 'success': false})
     }
 
     if (!fine_id) {
-        return res.status(400).json({'error': 'Fine ID not provided'})
+        return res.status(400).json({'error': 'Fine ID not provided', 'success': false})
     }
 
     const fine = player.fine.find(f => f._id.equals(fine_id));
     const removing = fine
 
     if (!fine){
-        return res.status(400).json({'error': 'Fine not found'})
+        return res.status(400).json({'error': 'Fine not found', 'success': false})
     }
 
     let amount = req.query.amount
     if (!amount){
-        return res.status(400).json({'error': 'No amount provided'})
+        return res.status(400).json({'error': 'No amount provided', 'success': false})
     }
 
     const amount_to_remove = Number(amount)
 
     const difference = fine.amount - amount_to_remove
     if (amount_to_remove <= 0){
-        return res.status(400).json({'error': 'Invalid amount (must be greater than 0'})
+        return res.status(400).json({'error': 'Invalid amount (must be greater than 0', 'success': false})
     }
 
     if (difference > 0){
@@ -115,17 +115,17 @@ router.post('/removeFine/:roblox_id/:fine_id', async (req, res) => {
     }
 
     else {
-        player.fine = player.fine.find(f => f._id !== fine_id);
+        player.fine = player.fine.find(f => f._id.equals(fine_id));
     }
 
     await player.save()
 
     if (difference > 0){
-        return res.status(200).json({'msg': `Success! Fine partially bailed for ${amount_to_remove}.`})
+        return res.status(200).json({'msg': `Success! Fine partially bailed for ${amount_to_remove}.`, 'success': true})
     }
 
     else {
-        return res.status(200).json({'msg': `Success! Fine with ${removing.reason} for ${removing.reason} for Roblox ID: ${player.robloxId} has been removed.`})
+        return res.status(200).json({'msg': `Success! Fine with ${removing.reason} for ${removing.reason} for Roblox ID: ${player.robloxId} has been removed.`, 'success': true})
     }
 })
 
