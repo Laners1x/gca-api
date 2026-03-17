@@ -143,7 +143,7 @@ router.post('/removeFine/:roblox_id/:fine_id', async (req, res) => {
                 },
                 {
                 name: `Amount${difference > 0 ? " Bailed" : ""}`,
-                value: `${difference > 0 ? difference : removing.amount} robux`,
+                value: `${difference > 0 ? amount_to_remove : removing.amount} robux`,
                 inline: true
                 }
             ],
