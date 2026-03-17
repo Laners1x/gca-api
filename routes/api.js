@@ -115,7 +115,7 @@ router.post('/removeFine/:roblox_id/:fine_id', async (req, res) => {
     }
 
     else {
-        player.fine = player.fine.find(f => !(f._id.equals(fine_id)));
+        player.fine = player.fine.filter(f => !(f._id.equals(fine_id))) || []
     }
 
     await player.save()
