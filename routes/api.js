@@ -75,6 +75,7 @@ router.get('/getFines/:roblox_id', async (req, res) => {
 // Remove Fine Endpoint
 router.post('/removeFine/:roblox_id/:fine_id', async (req, res) => {
     const roblox_id = req.params.roblox_id
+    const fine_id = req.params.fine_id
 
     if (!roblox_id){
         return res.status(400).json({'error': 'Roblox not provided'})
