@@ -91,7 +91,7 @@ router.post('/removeFine/:roblox_id/:fine_id', async (req, res) => {
         return res.status(400).json({'error': 'Fine ID not provided'})
     }
 
-    const fine = player.fine.find(f => f._id === fine_id);
+    const fine = player.fine.find(f => i._id.equals(fine_id));
     console.log(fine_id)
     console.log(player.fine)
     const removing = fine
