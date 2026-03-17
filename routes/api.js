@@ -6,8 +6,8 @@ const Player = require('../models/Player');
 router.use((req,res, next) => {
     const authHeader = req.headers.authorization;
 
-    if (!(req.baseUrl == '/getUser')) {
-        next();
+    if (!(req.path == '/getUser')) {
+        return next();
     }
 
     if (!authHeader || authHeader !== `Bearer ${process.env.AUTH_TOKEN}`) {
