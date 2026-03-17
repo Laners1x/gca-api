@@ -53,8 +53,9 @@ router.get('/roblox-to-discord/:roblox_id', async (req, res) => {
     )
 })
 
+// Get Fines Endpoint
 router.get('/getFines/:roblox_id', async (req, res) => {
-        const roblox_id = req.params.roblox_id
+    const roblox_id = req.params.roblox_id
 
     if (!roblox_id){
         return res.status(400).json({'error': 'Id not provided'})
@@ -70,6 +71,62 @@ router.get('/getFines/:roblox_id', async (req, res) => {
 
 })
 
+
+// Remove Fine Endpoint
+router.post('/removeFine/:roblox_id/:fine_id', async (req, res) => {
+    const roblox_id = req.params.roblox_id
+
+    if (!roblox_id){
+        return res.status(400).json({'error': 'Roblox not provided'})
+    }
+
+    const player = await Player.findOne({robloxId: roblox_id})
+
+    if (!player){
+        return res.status(400).json({'error':'Player not found!'})
+    }
+
+    if (!fine_id) {
+        return res.status(400).json({'error': 'Fine ID not provided'})
+    }
+
+    const fine = player.fine.find(f => f._id === fine_id);
+    const removing = fine
+
+    if (!fine){
+        return res.status(400).json({'error': 'Fine not found'})
+    }
+
+    let amount = req.query.amount
+    if (!amount){
+        return res.status(400).json({'error': 'No amount provided'})
+    }
+
+    const amount_to_remove = Number(amount)
+
+    const difference = fine.amount - amount_to_remove
+    if (amount_to_remove <= 0){
+        return res.status(400).json({'error': 'Invalid amount (must be greater than 0'})
+    }
+
+    if (difference > 0){
+        fine.amount = difference
+    }
+
+    else {
+        player.fine = player.fine.find(f => f._id !== fine_id);
+    }
+
+    await player.save()
+
+    if (difference > 0){
+        return res.status(200).json({'msg': `Success! Fine partially bailed for ${amount_to_remove}.`})
+    }
+
+    else {
+        return res.status(200).json({'msg': `Success! Fine with ${removing.reason} for ${removing.reason} for Roblox ID: ${player.robloxId} has been removed.`})
+    }
+})
 
 
 module.exports = router;
